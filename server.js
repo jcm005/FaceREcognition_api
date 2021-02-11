@@ -2,6 +2,21 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt-nodejs');
 const cors = require('cors');
+const knex = require('knex');
+const { response } = require('express');
+
+const db = knex({
+
+    client: 'pg',
+    connection: {
+        host: '127.0.0.1',
+        user: 'joemattern',
+        password: '',
+        database: 'facereco'
+    }
+});
+
+
 
 const app = express();
 
@@ -45,57 +60,66 @@ app.use(cors());
 
 
 app.post('/signin', (req, res) => {
-    console.log(req.body.email, req.body.password);
-    console.log(database.users[0].email, database.users[0].password)
-    if (req.body.email === database.users[0].email && req.body.password === database.users[0].password) {
-        res.json(database.user[0]);
-    } else {
-        res.status(400).json('error logging in');
-    }
+    db.select('email', 'hash').from('login')
+        .then(response => {
+            console.log(response);
+        })
 })
 
 app.post('/register', (req, res) => {
 
     const { email, name, password } = req.body;
-    const hashpass = bcrypt.hash(password, null, null, function (err, hash) {
-        // Store hash in your password DB.
-        console.log(hash);
-    });
+    const hashpass = bcrypt.hashSync(password);
+    // Store hash in your password DB.
 
-    database.users.push({
+    db.transaction(trx => {
+        trx.insert({
+            hash: hashpass,
+            email: email,
+        })
+            .into('login')
+            .returning('email')
+            .then(logInEmail => {
 
-        id: '125',
-        name: name,
-        email: email,
-        password: hashpass,
-        entries: 0,
-        joined: new Date()
-
+                return trx('users')
+                    .returning('*')
+                    .insert({
+                        email: logInEmail[0],
+                        name: name,
+                        joined: new Date()
+                    }).then(user => {
+                        res.json(user[0]);
+                    })
+            })
+            .then(trx.commit)
+            .catch(trx.rollback)
     })
-    res.json(database.users[database.users.length - 1])
+
+
+        .catch(err => {
+            res.status(400).json('unable to register')
+        })
+
 })
 
 app.get('/', (req, res) => {
 
-    res.send(database.users)
+    res.json('yup');
+
 })
 
 app.get('/profile/:id', (req, res) => {
 
     const { id } = req.params;
-    let found = false; // let because we are reassigning it 
-    database.users.forEach(user => {
-        if (user.id === id) {
-            found = true;
-            return res.json(user);
-        }
+    db.select('*').from('users').where({
+        id: id
     })
-    if (!found) {
-        res.status(400).json('not found');
-    }
+        .then(user => {
+            res.json(user[0])
+        })
 })
 
-app.post('/image', (req, res) => {
+app.put('/image', (req, res) => {
     const { id } = req.body;
     let found = false; // let because we are reassigning it 
     database.users.forEach(user => {
@@ -113,7 +137,7 @@ app.post('/image', (req, res) => {
     // ----------------------------------------
 })
 
-const port = 3010
+const port = 3004
 
 app.listen(port, () => {
     console.log(`app is running on port ${port}`);
@@ -130,3 +154,4 @@ app.listen(port, () => {
 
 // bcrypt node js
 
+// brew services start postgresql
