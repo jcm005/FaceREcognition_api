@@ -36,9 +36,9 @@ app.put('/image', (req, res) => { image.handleImage(req, res, db) });
 app.post('/imageurl', (req, res) => { image.handleAPICall(req, res) });
 
 
-const port = procces.env.PORT
+const port = 3006
 
-app.listen(port || 3000, () => {
+app.listen(port, () => {
     console.log(`app is running on port ${port}`);
 })
 
