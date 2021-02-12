@@ -14,10 +14,8 @@ const db = knex({
 
     client: 'pg',
     connection: {
-        host: 'postgresql-parallel-77065.0.1',
-        user: 'joemattern',
-        password: '',
-        database: 'facereco'
+        host: process.env.DATABASE_URL,
+        ssl: true,
     }
 });
 
