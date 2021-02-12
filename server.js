@@ -14,7 +14,7 @@ const db = knex({
 
     client: 'pg',
     connection: {
-        host: '127.0.0.1',
+        host: 'postgresql-parallel-77065.0.1',
         user: 'joemattern',
         password: '',
         database: 'facereco'
