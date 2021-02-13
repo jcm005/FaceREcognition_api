@@ -7,31 +7,20 @@ const handleRegister = (req, res, db, bcrypt) => {
     const hashpass = bcrypt.hashSync(password);
     // Store hash in your password DB.
 
-    db.transaction(trx => {
-        trx.insert({
-            hash: hashpass,
+
+    db('users')
+        .returning('*')
+        .insert({
             email: email,
+            name: name,
+            joined: new Date()
         })
-            .into('login')
-            .returning('email')
-            .then(logInEmail => {
-
-                return trx('users')
-                    .returning('*')
-                    .insert({
-                        email: logInEmail[0],
-                        name: name,
-                        joined: new Date()
-                    }).then(user => {
-                        res.json(user[0]);
-                    })
-            })
-            .then(trx.commit)
-            .catch(trx.rollback)
-    })
+        .then(user => {
+            res.json(user[0])
+        })
 
 
-        .catch(console.log);
+        .catch(console.log)
 
 }
 
