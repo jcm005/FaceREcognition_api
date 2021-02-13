@@ -12,12 +12,14 @@ const profile = require('./controllers/profile');
 const db = knex({
 
     client: 'pg',
-    connection: {
-        connectionString: process.env.DATABASE_URL,
-        ssl: true,
-
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false
     }
-});
+})
+
+
+
 
 
 
@@ -35,6 +37,6 @@ app.post('/imageurl', (req, res) => { image.handleAPICall(req, res) });
 
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-app.listen(process.env.PORT || 3010, () => {
+app.listen(process.env.PORT || 3007, () => {
     console.log(`app is listening on ${process.env.PORT}`)
 })
