@@ -6,11 +6,10 @@ const handleSignIn = (db, bcrypt) => (req, res) => {
     if (!email || !password) {
         return res.status(400).json('incorrect form submission');
     }
-    console.log(db)
     db.select('email', 'hash').from('login')
         .where('email', '=', email)
         .then(response => {
-            //console.log(response[0]);
+            console.log(response[0]);
             const isValid = bcrypt.compareSync(password, response[0].hash);
             console.log(isValid);
             if (isValid) {
@@ -26,7 +25,7 @@ const handleSignIn = (db, bcrypt) => (req, res) => {
                 res.status(400).json('wrong credentails yea')
             }
         })
-        .catch(err => res.status(400).json('hello'));
+        .catch(console.log);
 
 }
 
