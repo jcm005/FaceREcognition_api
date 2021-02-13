@@ -27,7 +27,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 
-app.get('/', (req, res) => { res.send(db.users) });
+app.get('/', (req, res) => { res.send(process.env) });
 app.post('/signin', signin.handleSignIn(db, bcrypt));
 app.post('/register', (req, res) => { register.handleRegister(req, res, db, bcrypt) });
 app.get('/profile/:id', (req, res) => { profile.handleProfile(req, res, db) });
