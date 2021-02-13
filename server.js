@@ -35,21 +35,7 @@ app.put('/image', (req, res) => { image.handleImage(req, res, db) });
 app.post('/imageurl', (req, res) => { image.handleAPICall(req, res) });
 
 
-
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 app.listen(process.env.PORT || 3000, () => {
     console.log(`app is listening on ${process.env.PORT}`)
 })
-
-
-
-
-
-
-//root route 
-// signin route
-// register post request
-//profile
-
-// bcrypt node js
-
-// brew services start postgresql
