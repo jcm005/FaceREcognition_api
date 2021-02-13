@@ -22,7 +22,7 @@ const handleSignIn = (req, res, db, bcrypt) => {
                 res.status(400).json('wrong credentails yea')
             }
         })
-        .catch(err => res.status(400).json(err));
+        .catch(err => res.status(400).json('hello'));
 
 }
 
