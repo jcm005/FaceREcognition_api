@@ -36,6 +36,6 @@ app.post('/imageurl', (req, res) => { image.handleAPICall(req, res) });
 
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
-app.listen(process.env.PORT || 3007, () => {
+app.listen(process.env.PORT || 3002, () => {
     console.log(`app is listening on ${process.env.PORT}`)
 })
