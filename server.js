@@ -3,7 +3,6 @@ const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt-nodejs');
 const cors = require('cors');
 const knex = require('knex');
-const { response } = require('express');
 
 const register = require('./controllers/register');
 const signin = require('./controllers/signin');
@@ -16,10 +15,9 @@ const db = knex({
     connection: {
         connectionString: process.env.DATABASE_URL,
         ssl: true,
-        rejectUnauthorized: false
+
     }
 });
-
 
 
 
@@ -28,7 +26,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 
-app.get('/', (req, res) => { res.send(db) });
+app.get('/', (req, res) => { res.send(db.users) });
 app.post('/signin', signin.handleSignIn(db, bcrypt));
 app.post('/register', (req, res) => { register.handleRegister(req, res, db, bcrypt) });
 app.get('/profile/:id', (req, res) => { profile.handleProfile(req, res, db) });
